@@ -6,6 +6,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5 import uic
 from calcuShear import *
+import math
 
 class ShearKey(object):
     def __init__(self):
@@ -25,15 +26,37 @@ class ShearKey(object):
         self.ui.pit_label.setPixmap(pixmap)
         self.ui.pit_label.setScaledContents(True) #自适应
         self.ui.setWindowIcon(QIcon("icon.ico"))
-        self.ui.Button_h.clicked.connect(self.test)
+        
+        self.ui.Button_h.clicked.connect(self.test)#绑定槽函数
+        
+        self.ui.comboBox.textActivated[str].connect(self.Con)#下拉框选项改变
+        
+    def Con(self):
+        #下拉框文字被激活绑定信号
+        text=self.ui.comboBox.currentText()
+        if text=="C30": #currentText获取当前选项的文字
+            return text
+        elif text=="C35": #currentText获取当前选项的文字
+            return text
+        elif text=="C40":
+            return text
+        elif text=="C45":
+            return text
         
     def test(self):
+        con=self.Con()
         B=int(self.ui.WidthValueEdit.text())
+        
         H=int(self.ui.HeightValueEdit.text())
+        
         t=int(self.ui.tValueEdit.text())
+        
         tw=int(self.ui.twValueEdit.text())
+        
         B1=int(self.ui.B1ValueEdit.text())
-        self.sh=Shear(B,H,t,tw,B1)
+        
+        self.sh=Shear(con,B,H,t,tw,B1)
+        
         h=self.sh.cal_h()
         V=self.sh.cal_V()
         M=self.sh.cal_M()

@@ -2,8 +2,12 @@
 from ast import Return
 import math
 
+
+
+
 #抗剪键参数
-fc=14.3
+
+#fc=14.3
 E=206000
 G=79000
 '''
@@ -20,7 +24,9 @@ A1=(H-2t)*tw
 I=1/12((B*math.pow(H,3))-(B-tw)*math.pow(H-2t,3)))'''
 
 class Shear():
-    def __init__(self,B,H,t,tw,B1):
+    def __init__(self,con,B,H,t,tw,B1):
+        super().__init__()
+        self.con=con
         self.B=B
         self.H=H
         self.t=t
@@ -44,13 +50,32 @@ class Shear():
         #k′为剪切截面形状系数,与截面形状有关，矩形截面
     #取 1 /1.2，H 型钢或工字型钢近似取 k′ = A1 /A，A1 为腹板面积)   
 
+    
+    
+    #混凝土等级fc
+    def concreteValue(self):
+        if self.con=="C30":
+            
+            return float(14.3)
+        
+        elif self.con=="C35":
+            
+            return float(16.7 )  
+        elif self.con=="C40":
+            
+            return float(19.1 )
+        elif self.con=="C45":
+           
+            return float(21.1 )
     def cal_k1(self): 
+        fc=self.concreteValue()
         K=self.cal_k()
         A=self.cal_A()
         return 2*fc*self.B/(K*A*G)
 
     def cal_k2(self):
         I=self.cal_I()
+        fc=self.concreteValue()
         return 2*fc*self.B/(E*I)
 
     #计算基础混凝土沿剪力方向的计算长度l 基础尺寸B1xL1xD
@@ -78,6 +103,7 @@ class Shear():
     def cal_V(self):
         h=self.cal_h()
         q=0.021
+        fc=self.concreteValue()
         if q==0.021:
             return round((0.77*fc*self.B*h)/1000,2)#屈服承载力
         else:
@@ -88,19 +114,19 @@ class Shear():
     def cal_M(self):
         h=self.cal_h()
         q=0.021
+        fc=self.concreteValue()
         if q==0.021:
             return round((0.314*fc*self.B*math.pow(h,2))/1000000,2)#M1
         else:
             return round((0.381*fc*self.B*math.pow(h,2))/1000000,2) #M2
-      
-
-'''def main():
-    sk1=Shear(100,200,20,16,1000) #抗剪键参数
+'''   
+def main():
+    sk1=Shear("C30",100,200,20,16,1000) #抗剪键参数
     埋深=sk1.cal_h()
     剪力=sk1.cal_V()
     附加弯矩=sk1.cal_M()  
     print("埋深：{}".format(埋深)+" mm","剪力：{}".format(剪力)+" Kn","附加弯矩：{}".format(附加弯矩)+" Kn.m") 
     
 if __name__ == '__main__':
-    main()'''
-    
+    main()
+    '''
